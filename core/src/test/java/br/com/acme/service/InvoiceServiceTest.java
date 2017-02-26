@@ -37,8 +37,7 @@ public class InvoiceServiceTest {
         Integer month = 12;
         String addressId = "A1B2";
         String filter = "shop";
-        InvoiceRequest invoiceRequest = createMockInvoiceRequest();
-        Mockito.when(invoiceService.listInvoices(customerId, month, addressId, filter)).thenReturn(Collections.singletonList(createMockInvoice(invoiceRequest)));
+        Mockito.when(invoiceService.listInvoices(customerId, month, addressId, filter)).thenReturn(Collections.singletonList(createMockInvoice(customerId, addressId, "ShopPurchase", "Winkel aankoop")));
         List<Invoice> invoices = invoiceService.listInvoices(customerId, month, addressId, filter);
         Assert.assertThat(invoices, is(notNullValue()));
         Assert.assertThat(invoices, is(hasSize(1)));
@@ -49,7 +48,7 @@ public class InvoiceServiceTest {
     public void saveWithSuccess() throws Exception {
 
         InvoiceRequest invoiceRequest = createMockInvoiceRequest();
-        Mockito.when(invoiceService.save(invoiceRequest)).thenReturn(createMockInvoice(invoiceRequest));
+        Mockito.when(invoiceService.save(invoiceRequest)).thenReturn(createMockInvoice(invoiceRequest.customerId(), invoiceRequest.addressId(), invoiceRequest.type(), invoiceRequest.typeLocalized()));
         Invoice invoice = invoiceService.save(invoiceRequest);
         Assert.assertThat(invoice, is(notNullValue()));
         Assert.assertThat(invoice.id(), is(notNullValue()));
@@ -57,14 +56,14 @@ public class InvoiceServiceTest {
 
     }
 
-    private Invoice createMockInvoice(InvoiceRequest invoiceRequest) {
+    private Invoice createMockInvoice(Long customerId, String addressId, String type, String typeLocalized) {
         return Invoice.builder()
                 .id(UUID.randomUUID())
                 .number(1L)
-                .addressId(invoiceRequest.addressId())
-                .customerId(invoiceRequest.customerId())
-                .type(invoiceRequest.type())
-                .typeLocalized(invoiceRequest.typeLocalized())
+                .addressId(addressId)
+                .customerId(customerId)
+                .type(type)
+                .typeLocalized(typeLocalized)
                 .periodDescription("Fake")
                 .date(Instant.now())
                 .startDate(Instant.now())
