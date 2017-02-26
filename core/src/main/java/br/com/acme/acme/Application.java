@@ -1,4 +1,4 @@
-package br.com.acme;
+package br.com.acme.acme;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core</artifactId>
+    <artifactId>acme-api-core</artifactId>
 
 
     <properties>
-        <project.mainClass>br.com.acme.Application</project.mainClass>
+        <project.mainClass>br.com.acme.acme.Application</project.mainClass>
         <spring-boot.version>1.5.1.RELEASE</spring-boot.version>
         <postgresjdbc.version>9.4.1212</postgresjdbc.version>
         <commons-lang3.version>3.4</commons-lang3.version>
