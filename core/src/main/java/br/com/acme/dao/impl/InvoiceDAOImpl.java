@@ -17,7 +17,6 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- *
  * Created by eric-nasc on 26/02/17.
  */
 @Repository
@@ -27,11 +26,16 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
 
         public Invoice mapRow(final ResultSet rs, final int line) throws SQLException {
 
+            final CurrencyUnit currency = CurrencyUnit.of(rs.getString("currency"));
+
             return Invoice.builder()
-                    .customerId(1L).invoiceDate(Instant.now()).invoiceId("1").invoiceNumber("QBL").invoiceType("type")
-                    .invoiceTypeLocalized("type").addressId("123").amount(Money.of(CurrencyUnit.AUD, BigDecimal.ONE))
-                    .paymentDueDate(Instant.now()).startDate(Instant.now()).endDate(Instant.now()).periodDescription("AAA")
-                    .vatAmount(Money.of(CurrencyUnit.USD, BigDecimal.TEN)).totalAmount(Money.of(CurrencyUnit.AUD, BigDecimal.ZERO))
+                    .customerId(rs.getLong("customer_id")).invoiceDate((rs.getTimestamp("invoice_date").toInstant()))
+                    .invoiceId(rs.getString("invoice_id")).invoiceNumber(rs.getString("invoice_number"))
+                    .invoiceType(rs.getString("invoice_type")).invoiceTypeLocalized(rs.getString("invoice_type_localized"))
+                    .addressId(rs.getString("address_id")).amount(Money.of(currency, rs.getBigDecimal("amount")))
+                    .paymentDueDate(rs.getTimestamp("payment_due_date").toInstant()).startDate(rs.getTimestamp("start_date").toInstant())
+                    .endDate(rs.getTimestamp("end_date").toInstant()).periodDescription(rs.getString("period_description"))
+                    .vatAmount(Money.of(currency, rs.getBigDecimal("vat_amount"))).totalAmount(Money.of(currency, rs.getBigDecimal("total_amount")))
                     .build();
         }
     }
@@ -39,9 +43,9 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
     @Override
     public List<Invoice> findInvoices(Long customerId) {
 
-        String sql =
-                "SELECT content_id, external_id, external_content_id, additional_code, content_type, discovery_id " +
-                        "FROM contents WHERE discovery_id = :id";
+        String sql = "SELECT invoice_id, customer_id, address_id, invoice_type, invoice_type_localized," +
+                " invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, " +
+                " currency, amount, vat_amount, total_amount FROM invoices WHERE customer_id = :customerId";
 
         final Map<String, Object> params = new HashMap<>();
         params.put("customerId", customerId);

@@ -1,56 +1,23 @@
-CREATE TABLE import (
-	id bigint NOT NULL,
-	dt_begin timestamp NULL,
-	info varchar(255) NULL,
-	imported int NULL,
-	CONSTRAINT import_pkey PRIMARY KEY (id)
+CREATE TABLE invoices (
+
+    invoice_id VARCHAR(200) PRIMARY KEY NOT NULL,
+	customer_id bigint NOT NULL,
+	address_id VARCHAR(200) NOT NULL,
+    invoice_type VARCHAR(100) NOT NULL,
+    invoice_type_localized VARCHAR(100),
+    invoice_date timestamptz NOT NULL,
+    payment_due_date timestamptz NOT NULL,
+    invoice_number bigint NOT NULL,
+    start_date timestamptz NOT NULL,
+    end_date timestamptz NOT NULL,
+    period_description VARCHAR(200)  NOT NULL,
+    currency text NOT NULL,
+    amount numeric(12, 2) NOT NULL,
+    vat_amount numeric(12, 2) NOT NULL,
+    total_amount numeric(12, 2) NOT NULL
+
 );
 
-CREATE TABLE discoveries (
-	discovery_id uuid PRIMARY KEY NOT NULL,
-	name VARCHAR(40) NOT NULL,
-    description VARCHAR(250),
-    created_at timestamptz NOT NULL,
-    img_url VARCHAR(250),
-    channels text,
-    category_type smallint,
-    priority_type smallint,
-    min integer,
-    max integer,
-    start_date timestamptz,
-    end_date timestamptz,
-    content_type smallint NOT NULL,
-    enabled boolean NOT NULL,
-    hide_name boolean NOT NULL,
-    preview_count integer
-);
 
-CREATE TABLE contents (
-	content_id uuid PRIMARY KEY NOT NULL,
-	external_id bigint NOT NULL,
-	external_content_id uuid,
-	additional_code VARCHAR(10),
-	content_type smallint NOT NULL,
-	discovery_id uuid NOT NULL,
-	CONSTRAINT content_discovery_fk FOREIGN KEY (discovery_id) REFERENCES "discoveries" (discovery_id)
-);
-
-CREATE TABLE criteria (
-	criteria_id uuid PRIMARY KEY NOT NULL,
-	field VARCHAR(20)  NOT NULL,
-	value text NOT NULL,
-	field_type smallint NOT NULL,
-	operator_type smallint,
-	discovery_id uuid NOT NULL,
-    CONSTRAINT content_discovery_fk FOREIGN KEY (discovery_id) REFERENCES "discoveries" (discovery_id)
-);
-
-CREATE TABLE sorts (
-	sort_id uuid PRIMARY KEY NOT NULL,
-	field VARCHAR(20)  NOT NULL,
-	field_type smallint NOT NULL,
-	order_type smallint,
-	priority smallint,
-	discovery_id uuid NOT NULL,
-    CONSTRAINT content_discovery_fk FOREIGN KEY (discovery_id) REFERENCES "discoveries" (discovery_id)
-);
+    INSERT INTO public.invoices (invoice_id, customer_id, address_id, invoice_type, invoice_type_localized, invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, currency, amount, vat_amount, total_amount) VALUES ('70ec3a54a43d014aa9e8', 1, '8212BJ154', 'AdvancePayment', 'Voorschot', '2015-02-13 00:00:00.000000', '2015-02-20 00:00:00.000000', 157005888, '2015-03-01 00:00:00.000000', '2015-04-01 00:00:00.000000', 'Maart 2015', 'EUR', 165.29, 34.71, 200.00);
+    INSERT INTO public.invoices (invoice_id, customer_id, address_id, invoice_type, invoice_type_localized, invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, currency, amount, vat_amount, total_amount) VALUES ('ef7bf8999a', 1, 'ef7bf8999a', 'AdvancePayment', 'Voorschot', '2014-11-13 00:00:00.000000', '2014-11-20 00:00:00.000000', 1429564, '2014-12-01 00:00:00.000000', '2015-01-01 00:00:00.000000', 'Maart 2015', 'EUR', 165.29, 34.71, 200.00);
