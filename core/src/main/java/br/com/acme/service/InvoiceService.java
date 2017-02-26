@@ -4,7 +4,6 @@ import br.com.acme.Invoice;
 import br.com.acme.dao.InvoiceDAO;
 import br.com.acme.request.InvoiceRequest;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 /**

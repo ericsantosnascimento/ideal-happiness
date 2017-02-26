@@ -1,0 +1,83 @@
+package br.com.acme.service;
+
+import br.com.acme.Invoice;
+import br.com.acme.request.InvoiceRequest;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+/**
+ * Created by eric-nasc on 26/02/17.
+ */
+@RunWith(MockitoJUnitRunner.class)
+public class InvoiceServiceTest {
+
+    @Mock
+    private InvoiceService invoiceService;
+
+    @Test
+    public void listInvoicesWithSuccess() throws Exception {
+
+        Long customerId = 1L;
+        Integer month = 12;
+        String addressId = "A1B2";
+        String filter = "shop";
+        InvoiceRequest invoiceRequest = createMockInvoiceRequest();
+        Mockito.when(invoiceService.listInvoices(customerId, month, addressId, filter)).thenReturn(Collections.singletonList(createMockInvoice(invoiceRequest)));
+        List<Invoice> invoices = invoiceService.listInvoices(customerId, month, addressId, filter);
+        Assert.assertThat(invoices, is(notNullValue()));
+        Assert.assertThat(invoices, is(hasSize(1)));
+
+    }
+
+    @Test
+    public void saveWithSuccess() throws Exception {
+
+        InvoiceRequest invoiceRequest = createMockInvoiceRequest();
+        Mockito.when(invoiceService.save(invoiceRequest)).thenReturn(createMockInvoice(invoiceRequest));
+        Invoice invoice = invoiceService.save(invoiceRequest);
+        Assert.assertThat(invoice, is(notNullValue()));
+        Assert.assertThat(invoice.id(), is(notNullValue()));
+        Assert.assertThat(invoice.date(), is(notNullValue()));
+
+    }
+
+    private Invoice createMockInvoice(InvoiceRequest invoiceRequest) {
+        return Invoice.builder()
+                .id(UUID.randomUUID())
+                .number(1L)
+                .addressId(invoiceRequest.addressId())
+                .customerId(invoiceRequest.customerId())
+                .type(invoiceRequest.type())
+                .typeLocalized(invoiceRequest.typeLocalized())
+                .periodDescription("Fake")
+                .date(Instant.now())
+                .startDate(Instant.now())
+                .endDate(Instant.now())
+                .paymentDueDate(Instant.now())
+                .amount(Money.of(CurrencyUnit.EUR, BigDecimal.TEN))
+                .vatAmount(Money.of(CurrencyUnit.EUR, BigDecimal.TEN))
+                .totalAmount(Money.of(CurrencyUnit.EUR, BigDecimal.TEN))
+                .build();
+    }
+
+    private InvoiceRequest createMockInvoiceRequest() {
+        return InvoiceRequest.builder().customerId(1L).addressId("1AB2").type("ShopPurchase").typeLocalized("Winkel aankoop").build();
+    }
+
+}
