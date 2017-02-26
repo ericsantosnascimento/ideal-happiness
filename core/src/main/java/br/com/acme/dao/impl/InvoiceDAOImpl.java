@@ -23,7 +23,7 @@ import java.util.*;
 public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
 
     private static final String INSERT_INVOICES = "INSERT INTO invoices (invoice_id, customer_id, address_id, invoice_type, invoice_type_localized, invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, currency, amount, vat_amount, total_amount) " +
-            " VALUES (:id, :customerId, :addressId, :type, :typeLocalized, :date, :paymentDueDate, :number , :startDate, :endDate, :periodDescription, 'EUR', :amount, :vatAmount, :totalAmount)";
+            " VALUES (:id, :customerId, :addressId, :type, :typeLocalized, :date, :paymentDueDate, :number, :startDate, :endDate, :periodDescription, 'EUR', :amount, :vatAmount, :totalAmount)";
 
     private static class InvoiceRowMapper implements RowMapper<Invoice> {
 
@@ -35,7 +35,7 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
                     .id(UUID.fromString(rs.getString("invoice_id")))
                     .customerId(rs.getLong("customer_id"))
                     .date((rs.getTimestamp("invoice_date").toInstant()))
-                    .number(rs.getString("invoice_number"))
+                    .number(rs.getLong("invoice_number"))
                     .type(rs.getString("invoice_type"))
                     .typeLocalized(rs.getString("invoice_type_localized"))
                     .addressId(rs.getString("address_id"))
@@ -103,9 +103,9 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
         parameters.put("startDate", Timestamp.from(invoice.startDate()));
         parameters.put("endDate", Timestamp.from(invoice.endDate()));
         parameters.put("periodDescription", invoice.periodDescription());
-        parameters.put("amount", invoice.amount());
-        parameters.put("vatAmount", invoice.vatAmount());
-        parameters.put("totalAmount", invoice.totalAmount());
+        parameters.put("amount", invoice.amount().getAmount());
+        parameters.put("vatAmount", invoice.vatAmount().getAmount());
+        parameters.put("totalAmount", invoice.totalAmount().getAmount());
 
         new NamedParameterJdbcTemplate(this.getJdbcTemplate()).update(INSERT_INVOICES, parameters);
 

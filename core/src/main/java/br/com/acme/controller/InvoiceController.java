@@ -1,6 +1,7 @@
 package br.com.acme.controller;
 
 import br.com.acme.Invoice;
+import br.com.acme.request.InvoiceRequest;
 import br.com.acme.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,8 @@ public class InvoiceController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Invoice save(@RequestBody Invoice invoice) {
-        return invoiceService.save(invoice);
+    public Invoice save(@RequestBody InvoiceRequest invoiceRequest) {
+        return invoiceService.save(invoiceRequest);
     }
 
 }

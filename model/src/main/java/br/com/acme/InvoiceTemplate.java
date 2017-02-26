@@ -31,7 +31,7 @@ public interface InvoiceTemplate {
 
     Instant paymentDueDate();
 
-    String number();
+    Long number();
 
     Instant startDate();
 
