@@ -55,7 +55,7 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
         }
 
         if (StringUtils.isNotBlank(addressId)) {
-            sql.append(" AND addressId = :addressId");
+            sql.append(" AND address_id = :addressId");
         }
 
         if (StringUtils.isNotBlank(filter)) {
