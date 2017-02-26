@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created by eric-nasc on 25/02/17.
  */
 @SpringBootApplication
-public class Application {
+public class AcmeApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class);
+        SpringApplication.run(AcmeApplication.class);
     }
 }

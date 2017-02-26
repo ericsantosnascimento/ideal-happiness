@@ -3,6 +3,7 @@ package br.com.acme.service;
 import br.com.acme.Invoice;
 import br.com.acme.exception.AcmeServiceException;
 import br.com.acme.request.InvoiceRequest;
+import br.com.acme.util.MockCreatorUtil;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Assert;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static br.com.acme.util.MockCreatorUtil.createMockInvoice;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -34,12 +36,9 @@ public class InvoiceServiceTest {
     @Test
     public void listInvoicesWithSuccess() throws Exception {
 
-        Long customerId = 1L;
-        Integer month = 12;
-        String addressId = "A1B2";
-        String filter = "shop";
-        Mockito.when(invoiceService.list(customerId, month, addressId, filter)).thenReturn(Collections.singletonList(createMockInvoice(customerId, addressId, "ShopPurchase", "Winkel aankoop")));
-        List<Invoice> invoices = invoiceService.list(customerId, month, addressId, filter);
+        Mockito.when(invoiceService.list(1L, 12, "A1B2", "shop")).thenReturn(Collections.singletonList(createMockInvoice(1L, "A1B2", "ShopPurchase", "Winkel aankoop")));
+        List<Invoice> invoices = invoiceService.list(1L, 12, "A1B2", "shop");
+
         Assert.assertThat(invoices, is(notNullValue()));
         Assert.assertThat(invoices, is(hasSize(1)));
 
@@ -48,12 +47,8 @@ public class InvoiceServiceTest {
     @Test(expected = AcmeServiceException.class)
     public void listInvoicesWithErrorInvalidMonth() {
 
-        Long customerId = 1L;
-        Integer month = 13;
-        String addressId = "A1B2";
-        String filter = "shop";
-        Mockito.when(invoiceService.list(customerId, month, addressId, filter)).thenThrow(new AcmeServiceException("Invalid Month, month must be between 1 and 12"));
-        invoiceService.list(customerId, month, addressId, filter);
+        Mockito.when(invoiceService.list(1L, 13, "A1B2", "shop")).thenThrow(new AcmeServiceException("Invalid Month, month must be between 1 and 12"));
+        invoiceService.list(1L, 13, "A1B2", "shop");
 
     }
 
@@ -61,36 +56,16 @@ public class InvoiceServiceTest {
     @Test
     public void saveWithSuccess() throws Exception {
 
-        InvoiceRequest invoiceRequest = createMockInvoiceRequest();
-        Mockito.when(invoiceService.save(invoiceRequest)).thenReturn(createMockInvoice(invoiceRequest.customerId(), invoiceRequest.addressId(), invoiceRequest.type(), invoiceRequest.typeLocalized()));
-        Invoice invoice = invoiceService.save(invoiceRequest);
+        InvoiceRequest mockedInvoiceRequest = MockCreatorUtil.createMockInvoiceRequest();
+        Invoice mockedInvoice = MockCreatorUtil.createMockInvoice(mockedInvoiceRequest.customerId(), mockedInvoiceRequest.addressId(), mockedInvoiceRequest.type(), mockedInvoiceRequest.typeLocalized());
+
+        Mockito.when(invoiceService.save(mockedInvoiceRequest)).thenReturn(mockedInvoice);
+        Invoice invoice = invoiceService.save(mockedInvoiceRequest);
+
         Assert.assertThat(invoice, is(notNullValue()));
         Assert.assertThat(invoice.id(), is(notNullValue()));
         Assert.assertThat(invoice.date(), is(notNullValue()));
 
-    }
-
-    private Invoice createMockInvoice(Long customerId, String addressId, String type, String typeLocalized) {
-        return Invoice.builder()
-                .id(UUID.randomUUID())
-                .number(1L)
-                .addressId(addressId)
-                .customerId(customerId)
-                .type(type)
-                .typeLocalized(typeLocalized)
-                .periodDescription("Fake")
-                .date(Instant.now())
-                .startDate(Instant.now())
-                .endDate(Instant.now())
-                .paymentDueDate(Instant.now())
-                .amount(Money.of(CurrencyUnit.EUR, BigDecimal.TEN))
-                .vatAmount(Money.of(CurrencyUnit.EUR, BigDecimal.TEN))
-                .totalAmount(Money.of(CurrencyUnit.EUR, BigDecimal.TEN))
-                .build();
-    }
-
-    private InvoiceRequest createMockInvoiceRequest() {
-        return InvoiceRequest.builder().customerId(1L).addressId("1AB2").type("ShopPurchase").typeLocalized("Winkel aankoop").build();
     }
 
 }

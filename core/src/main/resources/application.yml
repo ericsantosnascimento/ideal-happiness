@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: local
+server:
+  host: 127.0.0.1
+  port: 8080
+  contextPath: /sysapi
+  sessionTimeout: 30
+management:
+  security:
+    enabled: false
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/?&encoding=unicode
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    driver: org.postgresql.Driver
+---
+spring:
+  profiles: test
+  flyway:
+    enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=- 1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: postgres
+    password: postgres
+    initialize: true
+  driver: org.h2.Driver
+  classpath: ./lib/h2-1.4.192.jar
+  url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=- 1;DB_CLOSE_ON_EXIT=FALSE
+  username: postgres
+  password: postgres
