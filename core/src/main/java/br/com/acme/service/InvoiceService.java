@@ -4,7 +4,6 @@ import br.com.acme.Invoice;
 import br.com.acme.dao.InvoiceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,8 +20,8 @@ public class InvoiceService {
         this.invoiceDAO = invoiceDAO;
     }
 
-    public List<Invoice> listInvoices(@RequestParam Long customerId, @RequestParam Integer month) {
-        return invoiceDAO.findInvoices(customerId);
+    public List<Invoice> listInvoices(Long customerId, Integer month, String addressId, String filter) {
+        return invoiceDAO.findInvoices(customerId, month, addressId, filter);
     }
 
 }

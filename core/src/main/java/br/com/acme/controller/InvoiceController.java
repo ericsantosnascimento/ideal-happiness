@@ -18,14 +18,14 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @Autowired
-    public InvoiceController(InvoiceService invoiceService){
+    public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Invoice> list(@RequestParam Long customerId, @RequestParam Integer month) {
-        return invoiceService.listInvoices(customerId, month);
+    public List<Invoice> list(@RequestParam Long customerId, @RequestParam(required = false) Integer month, @RequestParam(required = false) String addressId, @RequestParam(required = false) String filter) {
+        return invoiceService.listInvoices(customerId, month, addressId, filter);
     }
 
 }

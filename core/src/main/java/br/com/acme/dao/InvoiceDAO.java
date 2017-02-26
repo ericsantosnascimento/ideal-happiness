@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface InvoiceDAO {
 
-    List<Invoice> findInvoices(Long customerId);
+    List<Invoice> findInvoices(Long customerId, Integer month, String addressId, String filter);
 }

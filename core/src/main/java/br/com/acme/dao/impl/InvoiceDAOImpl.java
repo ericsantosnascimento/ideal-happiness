@@ -4,6 +4,7 @@ import br.com.acme.Invoice;
 import br.com.acme.dao.AbstractDAO;
 import br.com.acme.dao.InvoiceDAO;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.springframework.jdbc.core.RowMapper;
@@ -41,17 +42,34 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
     }
 
     @Override
-    public List<Invoice> findInvoices(Long customerId) {
+    public List<Invoice> findInvoices(Long customerId, Integer month, String addressId, String filter) {
 
-        String sql = "SELECT invoice_id, customer_id, address_id, invoice_type, invoice_type_localized," +
-                " invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, " +
-                " currency, amount, vat_amount, total_amount FROM invoices WHERE customer_id = :customerId";
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT invoice_id, customer_id, address_id, invoice_type, invoice_type_localized,");
+        sql.append(" invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, ");
+        sql.append(" currency, amount, vat_amount, total_amount FROM invoices WHERE customer_id = :customerId ");
+
+        if (month != null) {
+            sql.append(" AND EXTRACT(MONTH FROM start_date) = :month");
+        }
+
+        if (StringUtils.isNotBlank(addressId)) {
+            sql.append(" AND addressId = :addressId");
+        }
+
+        if (StringUtils.isNotBlank(filter)) {
+            sql.append(" AND lower(invoice_type) LIKE lower('%:filter%')");
+        }
 
         final Map<String, Object> params = new HashMap<>();
         params.put("customerId", customerId);
+        params.put("month", month);
+        params.put("addressId", addressId);
+        params.put("filter", filter);
 
         final List<Invoice> resultList = new NamedParameterJdbcTemplate(this.getJdbcTemplate())
-                .query(sql, params, new InvoiceRowMapper());
+                .query(sql.toString(), params, new InvoiceRowMapper());
 
         if (CollectionUtils.isNotEmpty(resultList)) {
             return resultList;
