@@ -25,7 +25,7 @@ public class InvoiceController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public List<Invoice> list(@RequestParam Long customerId, @RequestParam Integer month) {
-        return invoiceService.list(customerId, month);
+        return invoiceService.listInvoices(customerId, month);
     }
 
 }

@@ -17,7 +17,7 @@ import java.util.UUID;
 @JsonDeserialize(as = Invoice.class)
 public interface InvoiceTemplate {
 
-    UUID customerId();
+    Long customerId();
 
     String addressId();
 
