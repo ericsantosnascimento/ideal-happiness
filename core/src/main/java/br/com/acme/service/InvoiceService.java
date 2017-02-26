@@ -24,4 +24,8 @@ public class InvoiceService {
         return invoiceDAO.findInvoices(customerId, month, addressId, filter);
     }
 
+    public Invoice save(Invoice invoice) {
+        return invoiceDAO.save(invoice);
+    }
+
 }

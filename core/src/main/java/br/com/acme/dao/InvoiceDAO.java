@@ -1,7 +1,6 @@
 package br.com.acme.dao;
 
 import br.com.acme.Invoice;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,4 +10,7 @@ import java.util.List;
 public interface InvoiceDAO {
 
     List<Invoice> findInvoices(Long customerId, Integer month, String addressId, String filter);
+
+    Invoice save(Invoice invoice);
+
 }

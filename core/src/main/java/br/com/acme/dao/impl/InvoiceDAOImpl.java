@@ -11,17 +11,22 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.util.*;
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eric-nasc on 26/02/17.
  */
 @Repository
 public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
+
+    private static final String INSERT_INVOICES = "INSERT INTO invoices (invoice_id, customer_id, address_id, invoice_type, invoice_type_localized, invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, currency, amount, vat_amount, total_amount) " +
+            " VALUES (:invoiceId, :customerId, :addressId, :invoiceType, :invoiceTypeLocalized, :invoiceDate, :paymentDueDate, :invoiceNumber , :startDate, :endDate, :periodDescription, 'EUR', :amount, :vatAmount, :totalAmount)";
 
     private static class InvoiceRowMapper implements RowMapper<Invoice> {
 
@@ -30,13 +35,20 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
             final CurrencyUnit currency = CurrencyUnit.of(rs.getString("currency"));
 
             return Invoice.builder()
-                    .customerId(rs.getLong("customer_id")).invoiceDate((rs.getTimestamp("invoice_date").toInstant()))
-                    .invoiceId(rs.getString("invoice_id")).invoiceNumber(rs.getString("invoice_number"))
-                    .invoiceType(rs.getString("invoice_type")).invoiceTypeLocalized(rs.getString("invoice_type_localized"))
-                    .addressId(rs.getString("address_id")).amount(Money.of(currency, rs.getBigDecimal("amount")))
-                    .paymentDueDate(rs.getTimestamp("payment_due_date").toInstant()).startDate(rs.getTimestamp("start_date").toInstant())
-                    .endDate(rs.getTimestamp("end_date").toInstant()).periodDescription(rs.getString("period_description"))
-                    .vatAmount(Money.of(currency, rs.getBigDecimal("vat_amount"))).totalAmount(Money.of(currency, rs.getBigDecimal("total_amount")))
+                    .customerId(rs.getLong("customer_id"))
+                    .invoiceDate((rs.getTimestamp("invoice_date").toInstant()))
+                    .invoiceId(rs.getString("invoice_id"))
+                    .invoiceNumber(rs.getString("invoice_number"))
+                    .invoiceType(rs.getString("invoice_type"))
+                    .invoiceTypeLocalized(rs.getString("invoice_type_localized"))
+                    .addressId(rs.getString("address_id"))
+                    .amount(Money.of(currency, rs.getBigDecimal("amount")))
+                    .paymentDueDate(rs.getTimestamp("payment_due_date").toInstant())
+                    .startDate(rs.getTimestamp("start_date").toInstant())
+                    .endDate(rs.getTimestamp("end_date").toInstant())
+                    .periodDescription(rs.getString("period_description"))
+                    .vatAmount(Money.of(currency, rs.getBigDecimal("vat_amount")))
+                    .totalAmount(Money.of(currency, rs.getBigDecimal("total_amount")))
                     .build();
         }
     }
@@ -77,6 +89,30 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
 
         return Collections.emptyList();
 
+    }
+
+    @Override
+    public Invoice save(Invoice invoice) {
+
+        final Map<String, Object> parameters = new HashMap<>();
+        parameters.put("invoiceId", invoice.invoiceId());
+        parameters.put("customerId", invoice.customerId());
+        parameters.put("addressId", invoice.addressId());
+        parameters.put("invoiceType", invoice.invoiceType());
+        parameters.put("invoiceTypeLocalized", invoice.invoiceTypeLocalized());
+        parameters.put("invoiceDate", Timestamp.from(invoice.invoiceDate()));
+        parameters.put("paymentDueDate", Timestamp.from(invoice.paymentDueDate()));
+        parameters.put("invoiceNumber", invoice.invoiceNumber());
+        parameters.put("startDate", Timestamp.from(invoice.startDate()));
+        parameters.put("endDate", Timestamp.from(invoice.endDate()));
+        parameters.put("periodDescription", invoice.periodDescription());
+        parameters.put("amount", invoice.amount());
+        parameters.put("vatAmount", invoice.vatAmount());
+        parameters.put("totalAmount", invoice.totalAmount());
+
+        new NamedParameterJdbcTemplate(this.getJdbcTemplate()).update(INSERT_INVOICES, parameters);
+
+        return invoice;
     }
 
 }
