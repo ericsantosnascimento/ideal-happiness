@@ -14,10 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by eric-nasc on 26/02/17.
@@ -26,7 +23,7 @@ import java.util.Map;
 public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
 
     private static final String INSERT_INVOICES = "INSERT INTO invoices (invoice_id, customer_id, address_id, invoice_type, invoice_type_localized, invoice_date, payment_due_date, invoice_number, start_date, end_date, period_description, currency, amount, vat_amount, total_amount) " +
-            " VALUES (:invoiceId, :customerId, :addressId, :invoiceType, :invoiceTypeLocalized, :invoiceDate, :paymentDueDate, :invoiceNumber , :startDate, :endDate, :periodDescription, 'EUR', :amount, :vatAmount, :totalAmount)";
+            " VALUES (:id, :customerId, :addressId, :type, :typeLocalized, :date, :paymentDueDate, :number , :startDate, :endDate, :periodDescription, 'EUR', :amount, :vatAmount, :totalAmount)";
 
     private static class InvoiceRowMapper implements RowMapper<Invoice> {
 
@@ -35,12 +32,12 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
             final CurrencyUnit currency = CurrencyUnit.of(rs.getString("currency"));
 
             return Invoice.builder()
+                    .id(UUID.fromString(rs.getString("invoice_id")))
                     .customerId(rs.getLong("customer_id"))
-                    .invoiceDate((rs.getTimestamp("invoice_date").toInstant()))
-                    .invoiceId(rs.getString("invoice_id"))
-                    .invoiceNumber(rs.getString("invoice_number"))
-                    .invoiceType(rs.getString("invoice_type"))
-                    .invoiceTypeLocalized(rs.getString("invoice_type_localized"))
+                    .date((rs.getTimestamp("invoice_date").toInstant()))
+                    .number(rs.getString("invoice_number"))
+                    .type(rs.getString("invoice_type"))
+                    .typeLocalized(rs.getString("invoice_type_localized"))
                     .addressId(rs.getString("address_id"))
                     .amount(Money.of(currency, rs.getBigDecimal("amount")))
                     .paymentDueDate(rs.getTimestamp("payment_due_date").toInstant())
@@ -95,14 +92,14 @@ public class InvoiceDAOImpl extends AbstractDAO implements InvoiceDAO {
     public Invoice save(Invoice invoice) {
 
         final Map<String, Object> parameters = new HashMap<>();
-        parameters.put("invoiceId", invoice.invoiceId());
+        parameters.put("id", invoice.id());
         parameters.put("customerId", invoice.customerId());
         parameters.put("addressId", invoice.addressId());
-        parameters.put("invoiceType", invoice.invoiceType());
-        parameters.put("invoiceTypeLocalized", invoice.invoiceTypeLocalized());
-        parameters.put("invoiceDate", Timestamp.from(invoice.invoiceDate()));
+        parameters.put("type", invoice.type());
+        parameters.put("typeLocalized", invoice.typeLocalized());
+        parameters.put("date", Timestamp.from(invoice.date()));
         parameters.put("paymentDueDate", Timestamp.from(invoice.paymentDueDate()));
-        parameters.put("invoiceNumber", invoice.invoiceNumber());
+        parameters.put("number", invoice.number());
         parameters.put("startDate", Timestamp.from(invoice.startDate()));
         parameters.put("endDate", Timestamp.from(invoice.endDate()));
         parameters.put("periodDescription", invoice.periodDescription());

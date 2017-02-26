@@ -28,7 +28,7 @@ public class InvoiceController {
         return invoiceService.listInvoices(customerId, month, addressId, filter);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Invoice save(@RequestBody Invoice invoice) {
         return invoiceService.save(invoice);

@@ -17,21 +17,21 @@ import java.util.UUID;
 @JsonDeserialize(as = Invoice.class)
 public interface InvoiceTemplate {
 
+    UUID id();
+
     Long customerId();
 
     String addressId();
 
-    String invoiceId();
+    String type();
 
-    String invoiceType();
+    String typeLocalized();
 
-    String invoiceTypeLocalized();
-
-    Instant invoiceDate();
+    Instant date();
 
     Instant paymentDueDate();
 
-    String invoiceNumber();
+    String number();
 
     Instant startDate();
 
