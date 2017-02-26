@@ -2,6 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <artifactId>acme-api-core</artifactId>
+    <packaging>jar</packaging>
+
     <parent>
         <artifactId>acme-api</artifactId>
         <groupId>br.com.acme</groupId>
@@ -9,11 +13,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>acme-api-core</artifactId>
-
-
     <properties>
-        <project.mainClass>br.com.acme.acme.Application</project.mainClass>
+        <project.mainClass>br.com.acme.Application</project.mainClass>
         <spring-boot.version>1.5.1.RELEASE</spring-boot.version>
         <postgresjdbc.version>9.4.1212</postgresjdbc.version>
         <commons-lang3.version>3.4</commons-lang3.version>
@@ -38,12 +39,22 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>br.com.acme</groupId>
+            <artifactId>acme-api-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>
             <exclusions>
+                <exclusion>
+                    <artifactId>hibernate-validator</artifactId>
+                    <groupId>org.hibernate</groupId>
+                </exclusion>
                 <exclusion>
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                     <groupId>org.springframework.boot</groupId>
@@ -95,7 +106,7 @@
         <!-- JDBC Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
 
@@ -124,6 +135,8 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox-swagger2.version}</version>
         </dependency>
+
+
     </dependencies>
 
     <build>
