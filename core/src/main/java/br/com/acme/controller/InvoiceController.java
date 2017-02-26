@@ -26,7 +26,7 @@ public class InvoiceController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public List<Invoice> list(@RequestParam Long customerId, @RequestParam(required = false) Integer month, @RequestParam(required = false) String addressId, @RequestParam(required = false) String filter) {
-        return invoiceService.listInvoices(customerId, month, addressId, filter);
+        return invoiceService.list(customerId, month, addressId, filter);
     }
 
     @RequestMapping(method = RequestMethod.POST)

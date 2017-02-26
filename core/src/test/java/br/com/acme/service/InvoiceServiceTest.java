@@ -1,6 +1,7 @@
 package br.com.acme.service;
 
 import br.com.acme.Invoice;
+import br.com.acme.exception.AcmeServiceException;
 import br.com.acme.request.InvoiceRequest;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -37,12 +38,25 @@ public class InvoiceServiceTest {
         Integer month = 12;
         String addressId = "A1B2";
         String filter = "shop";
-        Mockito.when(invoiceService.listInvoices(customerId, month, addressId, filter)).thenReturn(Collections.singletonList(createMockInvoice(customerId, addressId, "ShopPurchase", "Winkel aankoop")));
-        List<Invoice> invoices = invoiceService.listInvoices(customerId, month, addressId, filter);
+        Mockito.when(invoiceService.list(customerId, month, addressId, filter)).thenReturn(Collections.singletonList(createMockInvoice(customerId, addressId, "ShopPurchase", "Winkel aankoop")));
+        List<Invoice> invoices = invoiceService.list(customerId, month, addressId, filter);
         Assert.assertThat(invoices, is(notNullValue()));
         Assert.assertThat(invoices, is(hasSize(1)));
 
     }
+
+    @Test(expected = AcmeServiceException.class)
+    public void listInvoicesWithErrorInvalidMonth() {
+
+        Long customerId = 1L;
+        Integer month = 13;
+        String addressId = "A1B2";
+        String filter = "shop";
+        Mockito.when(invoiceService.list(customerId, month, addressId, filter)).thenThrow(new AcmeServiceException("Invalid Month, month must be between 1 and 12"));
+        invoiceService.list(customerId, month, addressId, filter);
+
+    }
+
 
     @Test
     public void saveWithSuccess() throws Exception {

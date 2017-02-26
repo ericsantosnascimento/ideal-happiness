@@ -2,8 +2,10 @@ package br.com.acme.service;
 
 import br.com.acme.Invoice;
 import br.com.acme.dao.InvoiceDAO;
+import br.com.acme.exception.AcmeServiceException;
 import br.com.acme.request.InvoiceRequest;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,12 @@ public class InvoiceService {
         this.invoiceDAO = invoiceDAO;
     }
 
-    public List<Invoice> listInvoices(Long customerId, Integer month, String addressId, String filter) {
+    public List<Invoice> list(Long customerId, Integer month, String addressId, String filter) {
+
+        if (month != null && (month < 1 || month > 12)) {
+            throw new AcmeServiceException("Invalid Month, month must be between 1 and 12");
+        }
+
         return invoiceDAO.findInvoices(customerId, month, addressId, filter);
     }
 
