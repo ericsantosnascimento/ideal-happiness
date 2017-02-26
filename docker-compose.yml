@@ -1,0 +1,43 @@
+version: '2.0'
+
+services:
+#  ws:
+#    build: core/
+#    ports:
+#      - "9080:9080"
+#      - "5005:5005"
+#    links: &ws_links
+#      - postgres:postgres.local
+#      - db-schema:db-schema.local
+#    environment:
+#      - DATABASE_URL=jdbc:postgresql://postgres.local:5432/?&encoding=unicode
+#      - DEBUG_PORT=5005
+#    command: bash -c "until nc -z db-schema.local 5431; do sleep 1; echo 'waiting for postgres setup...'; done; ./start.sh"
+#    mem_limit: 512m
+
+  db-schema:
+    build: db-schema/
+    ports:
+      - "5431:5431"
+    links: &db_schema_links
+      - postgres:postgres.local
+      - alpine-flyway
+    environment:
+      - DATABASE_HOST=postgres.local
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_SCHEMAS=public
+    command: sh -c "until nc -z postgres.local 5432; do sleep 1; echo 'waiting for postgres...'; done; ./start.sh && echo \"while true; do nc -l -p 5431; done;\" > wait.sh && sh wait.sh"
+    mem_limit: 32m
+
+  postgres:
+    image: postgres:9.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    mem_limit: 128m
+
+  alpine-flyway:
+    build: docker/alpine-flyway
