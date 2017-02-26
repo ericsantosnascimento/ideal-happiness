@@ -4,10 +4,7 @@ import br.com.acme.Invoice;
 import br.com.acme.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,8 +24,8 @@ public class InvoiceController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Invoice> list() {
-        return invoiceService.list();
+    public List<Invoice> list(@RequestParam Long customerId, @RequestParam Integer month) {
+        return invoiceService.list(customerId, month);
     }
 
 }
