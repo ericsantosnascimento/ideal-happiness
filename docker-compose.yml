@@ -1,19 +1,19 @@
 version: '2.0'
 
 services:
-#  ws:
-#    build: core/
-#    ports:
-#      - "9080:9080"
-#      - "5005:5005"
-#    links: &ws_links
-#      - postgres:postgres.local
-#      - db-schema:db-schema.local
-#    environment:
-#      - DATABASE_URL=jdbc:postgresql://postgres.local:5432/?&encoding=unicode
-#      - DEBUG_PORT=5005
-#    command: bash -c "until nc -z db-schema.local 5431; do sleep 1; echo 'waiting for postgres setup...'; done; ./start.sh"
-#    mem_limit: 512m
+  ws:
+    build: core/
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    links: &ws_links
+      - postgres:postgres.local
+      - db-schema:db-schema.local
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres.local:5432/?&encoding=unicode
+      - DEBUG_PORT=5005
+    command: bash -c "until nc -z db-schema.local 5431; do sleep 1; echo 'waiting for postgres setup...'; done; ./start.sh"
+    mem_limit: 512m
 
   db-schema:
     build: db-schema/

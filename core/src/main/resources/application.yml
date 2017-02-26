@@ -6,14 +6,16 @@ server:
   port: 8080
   contextPath: /sysapi
   sessionTimeout: 30
-management:
+#management:
+#  port: 8081
   security:
     enabled: false
 ---
 spring:
   profiles: local
   datasource:
-    url: jdbc:postgresql://localhost:5432/?&encoding=unicode
+#    url: jdbc:postgresql://localhost:5432/?&encoding=unicode
+    url: jdbc:postgresql://postgres.local:5432/?&encoding=unicode
     driverClassName: org.postgresql.Driver
     username: postgres
     password: postgres
